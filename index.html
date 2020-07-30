@@ -4,156 +4,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
-    <title>Chat App</title>
+    <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+        integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+    <title>Chat Application</title>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <form onsubmit="return sendMessage()">
-                <input type="text" id="message" placeholder="Enter message" autocomplete="off">
+    <div class="user">
+        <h3 id="user-name">User name</h3>
+        <img src="" alt="avatar" id="avatar" style="width: 80px; height: auto; border-radius: 100%;">
+    </div>
+    <div id="action">
+        <div class="action-container">
+            <button id="menu-btn">Menu</button>
+            <div class="dropdown-menu hidden">
+                <button id="login-btn">Log in</button>
+                <button id="new-chat" class="hidden">New Chat</button>
+                <button id="signup-btn">Sign up</button>
+                <button id="logout-btn" class="hidden">Log out</button>
+            </div>
+        </div>
+        <form class="form-input">
+            <input type="text" id="txtEmail" placeholder="Enter Email">
+            <input type="password" id="txtPassword" placeholder="Enter Password">
+        </form>
+    </div>
 
-                <input type="submit" value="send">
-            </form>
-            <ul id="messages">
+    <div class="popularFriends hidden">
+        <div class="listFriends">
+            <ul class="friends-container">
+
             </ul>
         </div>
     </div>
 
-    <input type="email" id="txtEmail" placeholder="Email">
-    <input type="password" id="txtPassword" placeholder="Password">
-    <button id="login">Log in</button>
-    <button id="signup">Sign up</button>
-    <button id="logout">Log out</button>
+    <div id="chat-container">
+        <div id="search-container">
+            <div id="search-icon"><i class="fas fa-search"></i></div>
+            <input type="text" placeholder="Search" id="input-search" oninput="searching(this.value);">
+        </div>
+        <div id="conversation-list">
+            <!-- <div class="conversation" data-currentFriendKey="">
+                <img src="img/1.png" alt="User name">
+                <div class="title-text">
+                    Daryl Duckmanton
+                </div>
+                <div class="created-date">
+                    Apr 16
+                </div>
+                <div class="conversation-message">
+                    This is a message
+                </div>
+            </div>
+            <div class="conversation">
+                <img src="img/2.png" alt="User name">
+                <div class="title-text">
+                    Anna Baterfil
+                </div>
+                <div class="created-date">
+                    Apr 16
+                </div>
+                <div class="conversation-message">
+                    This is a message
+                </div>
+            </div>
+            <div class="conversation">
+                <img src="img/3.png" alt="User name">
+                <div class="title-text">
+                    McGree
+                </div>
+                <div class="created-date">
+                    Apr 16
+                </div>
+                <div class="conversation-message">
+                    This is a message
+                </div>
+            </div>
+            <div class="conversation">
+                <img src="img/4.png" alt="User name">
+                <div class="title-text">
+                    Krix Daniel
+                </div>
+                <div class="created-date">
+                    Apr 16
+                </div>
+                <div class="conversation-message">
+                    This is a message
+                </div>
+            </div>
+            <div class="conversation">
+                <img src="img/5.png" alt="User name">
+                <div class="title-text">
+                    Lazarus
+                </div>
+                <div class="created-date">
+                    Apr 16
+                </div>
+                <div class="conversation-message">
+                    This is a message
+                </div>
+            </div>
+            <div class="conversation">
+                <img src="img/6.png" alt="User name">
+                <div class="title-text">
+                    Lucy
+                </div>
+                <div class="created-date">
+                    Apr 16
+                </div>
+                <div class="conversation-message">
+                    This is a message
+                </div>
+            </div>
+            <div class="conversation">
+                <img src="img/7.png" alt="User name">
+                <div class="title-text">
+                    Pill
+                </div>
+                <div class="created-date">
+                    Apr 16
+                </div>
+                <div class="conversation-message">
+                    This is a message
+                </div>
+            </div> -->
+        </div>
 
+        <div id="new-message-container">
+            <a href="#">+</a>
+        </div>
+
+        <div id="chat-title">
+            <span id="divChatName">
+                <img src="img/1.png" alt="" id="imgChat" style="width: 37px; height: auto; border-radius: 100%;">
+                Daryl Duckmanton
+            </span>
+            <!-- <div class="divChatPhoto">
+                <img src="img/1.png" alt="" id="imgChat" style="width: 37px; height: auto; border-radius: 100%;">
+            </div>
+            <div class="divChat">
+                <div id="divChatName">Daryl Duckmanton</div>
+                <div id="divChatSeen">06/15/2020</div>
+            </div> -->
+            <div id="trash-icon"><i class="fas fa-trash"></i></div>
+        </div>
+
+        <div id="chat-message-list" style="display: none;">
+            <div class="message-row you-message">
+                <div class="message-content">
+                    <div class="message-text">Ok then</div>
+                    <div class="message-time">Apr 12</div>
+                </div>
+            </div>
+            <div class="message-row other-message">
+                <div class="message-content">
+                    <img src="img/1.png" alt="User name">
+                    <div class="message-text">Ok then Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maxime
+                        possimus nulla fugiat earum ad, nobis error molestias illum consectetur dolores praesentium
+                        voluptates saepe alias ullam blanditiis reiciendis suscipit nam harum.</div>
+                    <div class="message-time">Apr 12</div>
+                </div>
+            </div>
+            <div class="message-row you-message">
+                <div class="message-content">
+                    <div class="message-text">Ok then</div>
+                    <div class="message-time">Apr 12</div>
+                </div>
+            </div>
+            <div class="message-row other-message">
+                <div class="message-content">
+                    <img src="img/1.png" alt="User name">
+                    <div class="message-text">Ok then Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maxime
+                        possimus nulla fugiat earum ad, nobis error molestias illum consectetur dolores praesentium
+                        voluptates saepe alias ullam blanditiis reiciendis suscipit nam harum.</div>
+                    <div class="message-time">Apr 12</div>
+                </div>
+            </div>
+            <div class="message-row you-message">
+                <div class="message-content">
+                    <div class="message-text">Ok then</div>
+                    <div class="message-time">Apr 12</div>
+                </div>
+            </div>
+            <div class="message-row other-message">
+                <div class="message-content">
+                    <img src="img/1.png" alt="User name">
+                    <div class="message-text">Ok then Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maxime
+                        possimus nulla fugiat earum ad, nobis error molestias illum consectetur dolores praesentium
+                        voluptates saepe alias ullam blanditiis reiciendis suscipit nam harum.</div>
+                    <div class="message-time">Apr 12</div>
+                </div>
+            </div>
+            <div class="message-row other-message">
+                <div class="message-content">
+                    <img src="img/1.png" alt="User name">
+                    <div class="message-text">Ok then Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maxime
+                        possimus nulla fugiat earum ad, nobis error molestias illum consectetur dolores praesentium
+                        voluptates saepe alias ullam blanditiis reiciendis suscipit nam harum.</div>
+                    <div class="message-time">Apr 12</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="chat-form">
+            <div id="file-icon"><i class="fas fa-paperclip"></i></div>
+            <input type="text" placeholder="Type a message" onclick="OneKeyDown();" id="inputMessage">
+            <div id="send-icon"><i class="fas fa-paper-plane"></i></div>
+        </div>
+    </div>
 </body>
+<!-- FireBase Declare -->
 <!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase.js"></script>
 
 <!-- include firebase database -->
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-database.js"></script>
-
-<!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
-<!-- Add Firebase products that you want to use -->
+<!-- Auth -->
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-firestore.js"></script>
-
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
-
-<script>
-    // Your web app's Firebase configuration
-    var firebaseConfig = {
-        apiKey: "AIzaSyBVpfdAX8236oHMWpmpdiY4PCa1NDN7saI",
-        authDomain: "chat-app-fd618.firebaseapp.com",
-        databaseURL: "https://chat-app-fd618.firebaseio.com",
-        projectId: "chat-app-fd618",
-        storageBucket: "chat-app-fd618.appspot.com",
-        messagingSenderId: "205351507501",
-        appId: "1:205351507501:web:9b5a8df5abeb362beccaa4",
-        measurementId: "G-8C7F0GGRFC"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
-
-    var myName = prompt("Enter your name: ");
-
-    // Send message
-    function sendMessage() {
-        // Get message
-        var message = document.querySelector("#message").value;
-
-        // Save message to database
-        // ref("messages"): name of table
-        firebase.database().ref("messages").push().set({
-            "sender": myName,
-            "message": message
-        });
-        document.querySelector("#message").value = "";
-        // Prevent form from submitting
-        return false;
-    }
-
-    // Listen for incoming messages
-    firebase.database().ref("messages").on("child_added", function (snapshot) {
-        var html = "";
-        // Give each message a unique ID
-        html += "<li id='message-" + snapshot.key + "'>";
-        // Show delete button if message is sent by me
-        if (snapshot.val().sender == myName) {
-            html += "<button data-id='" + snapshot.key + "' onclick='deleteMessage(this)'>";
-            html += "Delete";
-            html += "</button>";
-        }
-        html += snapshot.val().sender + ": " + snapshot.val().message;
-        html += "</li>";
-
-        document.querySelector("#messages").innerHTML += html;
-    });
-
-    function deleteMessage(self) {
-        // Get message ID
-        var messageID = self.getAttribute("data-id");
-
-        // Delete message
-        firebase.database().ref("messages").child(messageID).remove();
-    }
-    // Attach listener for delete message
-    firebase.database().ref("messages").on("child_removed", function (snapshot) {
-        // Remove message node
-        document.querySelector("#message-" + snapshot.key).innerHTML = "This message has been removed";
-
-    });
-
-    const txtEmail = document.querySelector("#txtEmail");
-    const txtPassword = document.querySelector("#txtPassword");
-    const login = document.querySelector("#login");
-    const signup = document.querySelector("#signup");
-    const logout = document.querySelector("#logout");
-
-    // Add login event
-    login.addEventListener("click", e => {
-        // Get email and pass
-        const email = txtEmail.value;
-        const password = txtPassword.value;
-        const auth = firebase.auth();
-        // Sign in
-        const promise = auth.signInWithEmailAndPassword(email, password);
-        console.log(promise);
-        promise.catch(e => console.log(e.message));
-    });
-
-    // Add logout event
-    logout.addEventListener("click", e => {
-        firebase.auth().signOut();
-    });
-
-    // Add signin event
-    signup.addEventListener("click", e => {
-        // Get email and pass
-        const email = txtEmail.value;
-        const password = txtPassword.value;
-        const auth = firebase.auth();
-        // Sign in
-        const promise = auth.createUserWithEmailAndPassword(email, password);
-
-        promise.catch(e => console.log(e.message));
-    });
-
-    // Add a realtime listener
-    firebase.auth().onAuthStateChanged(firebaseUser => {
-        if (firebaseUser) {
-            console.log(firebaseUser)
-        } else {
-            console.log("Not logged in")
-        }
-    });
-
-</script>
+<script src="firebase.init.js"></script>
+<script src="javascript.js"></script>
 
 </html>
