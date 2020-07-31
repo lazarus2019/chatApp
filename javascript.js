@@ -51,7 +51,7 @@ function loadChatList() {
             } else if (lst.userId === currentUserKey) {
                 friendKey = lst.friendId;
             }
-            if(friendKey !== ""){
+            if (friendKey !== "") {
                 firebase.database().ref('users').child(friendKey).on('value', function (data) {
                     var user = data.val();
                     conversationLists.innerHTML += `<div class="conversation" data-currentFriendKey="" onclick="startChat('${data.key}', '${user.name}', '${user.photoURL}')">
@@ -68,7 +68,7 @@ function loadChatList() {
                 </div>`;
                 });
             }
-        });       
+        });
     });
 }
 
@@ -111,7 +111,6 @@ newChatBtn.addEventListener("click", function () {
     });
 });
 
-var test = 0;
 function startChat(friendKey, friendName, friendPhoto) {
     var friendList = { friendId: friendKey, userId: currentUserKey };
     var flag = false;
@@ -133,46 +132,50 @@ function startChat(friendKey, friendName, friendPhoto) {
             }).getKey();
         } else {
             chatMessageList.removeAttribute("style");
-        }        
+        }
         // Display friend name & photo
         // document.querySelector("#imgChat").src = friendPhoto;
-        document.querySelector("#divChatName").textContent = friendName;        
-        chatList.innerHTML = '';
+        document.querySelector("#divChatName").textContent = friendName;
+        // chatList.innerHTML = '';
         // Display the chat messages
-        loadChatMessages(chatKey, friendPhoto);        
+        loadChatMessages(chatKey, friendPhoto);
     });
 }
 
-function loadChatMessages(chatKey, friendPhoto) {        
+function loadChatMessages(chatKey, friendPhoto) {
     var db = firebase.database().ref('chatMessages').child(chatKey);
     // var db_friend = firebase.database().ref('users');
     var messageDisplay = '';
     db.on('value', function (chats) {
         chats.forEach(function (data) {
             var chat = data.val();
+            var msg = '';
             var dateTime = chat.dateTime.split(",");
+            if(chat.msg.indexOf("base64") !== -1){
+                msg = `<img src='${chat.msg}' class="img-fluid">`;
+            }else{
+                msg = chat.msg;
+            }
             if (chat.userId !== currentUserKey) {
                 messageDisplay += `<div class="message-row other-message">
                 <div class="message-content">
                     <img src="${friendPhoto}" alt="User name">
-                    <div class="message-text">${chat.msg}</div>
+                    <div class="message-text">${msg}</div>
                     <div class="message-time"><span title="${dateTime[0]}">${dateTime[1]}</span></div>
                 </div>
             </div>`;
-            }else{
-                test++;
+            } else {
                 messageDisplay += `<div class="message-row you-message">
                 <div class="message-content">
-                    <div class="message-text">${chat.msg}</div>
+                    <div class="message-text">${msg}</div>
                     <div class="message-time"><span title="${dateTime[0]}">${dateTime[1]}</span></div>
-                </div></div>`;              
+                </div></div>`;
             }
         });
         chatList.innerHTML = messageDisplay;
         // Scroll to the bottom when added more message
         chatList.scrollTo(0, chatList.scrollHeight);
     });
-    console.log(test);
 }
 
 function SendMessage(inputMessage) {
@@ -197,6 +200,35 @@ function SendMessage(inputMessage) {
             // // }, 100);
         }
     });
+}
+
+// Send image
+function chooseImage() {
+    document.querySelector("#uploadFile").click();
+}
+
+function sendImage(event) {
+    var file = event.files[0];
+    if (!file.type.match("image.")) {
+        alert("Please select image only!");
+    } else {
+        var reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            var chatMessage = { userId: currentUserKey, msg: reader.result, dateTime: new Date().toLocaleString() };
+            // alert(chatKey);
+            firebase.database().ref('chatMessages').child(chatKey).push(chatMessage, function (error) {
+                if (error) alert(error);
+                else {                    
+                    document.querySelector("#inputMessage").value = "";
+                    document.querySelector("#inputMessage").focus();                   
+                }
+            });
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
 }
 
 function GetCurrentTime() {
