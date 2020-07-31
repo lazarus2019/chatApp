@@ -344,3 +344,12 @@ body {
     color: white;
     position: relative;
 }
+
+#emoji{
+    width: 100%;
+    display: inline;
+}
+
+#myTabContent a{
+    text-decoration: none;
+}

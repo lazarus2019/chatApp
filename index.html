@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    
+
     <div class="user">
         <h3 id="user-name">User name</h3>
         <img src="" alt="avatar" id="avatar" style="width: 80px; height: auto; border-radius: 100%;">
@@ -157,8 +157,32 @@
         <div id="chat-form">
             <div id="file-icon" onclick="chooseImage();"><i class="fas fa-paperclip"></i></div>
             <input type="file" id="uploadFile" onchange="sendImage(this);" accept="image/*" style="display:none">
-            <input type="text" placeholder="Type a message" onclick="OneKeyDown();" id="inputMessage">
-            <div id="send-icon"><i class="fas fa-paper-plane"></i></div>
+            <input type="text" placeholder="Type a message" onclick="OneKeyDown();" onfocus="hideEmojiPanel();" id="inputMessage">
+            <div id="send-icon" onclick="showEmojiPanel();"><i class="fas fa-paper-plane"></i></div>
+            <div id="emoji" style="display: none;">
+                <ul id="myTab">
+                    <li>
+                        <a id="home-tab" href="#smiley">Smiley</a>
+                    </li>
+                    <li>
+                        <a id="profile-tab" href="#profile">Shape</a>
+                    </li>
+                    <li>
+                        <a id="contact-tab" href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane" id="smiley">
+                        
+                    </div>
+                    <div class="tab-pane" id="profile">
+                        <a href="#"></a>
+                    </div>
+                    <div class="tab-pane" id="contact">
+                        <a href="#"></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

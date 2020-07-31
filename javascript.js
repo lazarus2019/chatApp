@@ -202,7 +202,7 @@ function SendMessage(inputMessage) {
     });
 }
 
-// Send image
+//======Send image==========
 function chooseImage() {
     document.querySelector("#uploadFile").click();
 }
@@ -229,6 +229,29 @@ function sendImage(event) {
             reader.readAsDataURL(file);
         }
     }
+}
+
+//======Emoji==========
+function loadEmoji(){
+    var emojiArray = '';
+    for(let i = 128512; i <= 128580; i++){
+        emojiArray += `<a onclick="getEmoji(this);" style="cursor: pointer">&#${i}</a>`;
+    }
+    document.querySelector("#smiley").innerHTML = emojiArray;
+}
+
+loadEmoji();
+
+function showEmojiPanel(){
+    document.querySelector("#emoji").removeAttribute("style");
+}
+
+function hideEmojiPanel(){
+    document.querySelector("#emoji").setAttribute("style", "display:none");
+}
+
+function getEmoji(control){
+    document.querySelector("#inputMessage").value += control.innerHTML;
 }
 
 function GetCurrentTime() {
