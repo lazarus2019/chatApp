@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Test</title>
+</head>
+
+<body>
+    <audio id="audio" controls></audio>
+    <button id="btnMusic" onclick="playMusic()" style="display: none;">Play music</button>
+    <button id="recordingBtn" onclick="startRecording()">Recording</button>
+</body>
+<script>
+    const btnMusic = document.querySelector("#btnMusic");
+    const audioPlay = document.querySelector("#audio");
+    const recordingBtn = document.querySelector("#recordingBtn");
+    let music = new Audio();
+    let device = navigator.mediaDevices.getUserMedia({ audio: true });
+    let chunks = [];
+    let recorder;
+
+    // Set time to stop recording
+    function stopRecording() {
+        recorder.stop();
+        recordingBtn.style.display = "none";
+        btnMusic.style.display = "block";
+    }
+
+    function startRecording() {
+        device.then(stream => {
+            recorder = new MediaRecorder(stream);
+            recorder.ondataavailable = e => {
+                chunks.push(e.data);
+
+                if (recorder.state == 'inactive') {
+                    let blob = new Blob(chunks, { type: 'audio/webm' });
+                    document.querySelector("#audio").src = URL.createObjectURL(blob);
+                }
+            }
+            recorder.start(0);
+        });
+        recordingBtn.textContent = "Stop Recording";
+        recordingBtn.setAttribute("onclick", "stopRecording()");
+    }
+
+    // Music
+    function playMusic() {
+        audioPlay.play();
+        btnMusic.textContent = "Stop Music";
+        btnMusic.setAttribute("onclick", "stopMusic()");
+    }
+
+    function stopMusic() {
+        audioPlay.stop();
+        btnMusic.textContent = "Play Music";
+        btnMusic.setAttribute("onclick", "playMusic()");
+    }
+
+    // function add(a, b) {
+    //     return a + b;
+    // }
+
+    // let add = (a, b) => a + b;
+
+    // function display() {
+    //     alert("Alert");
+    // }
+
+    // let display = () => alert("Alert");
+
+    // //======Promise============
+    // let p = new Promise((resolve, reject) => {
+    //     let a = 1 + 1;
+    //     if (a == 2)
+    //         resolve("success")
+    //     else
+    //         reject("fail");
+    // });
+
+    // p.then((msg)=>{
+    //     console.log(msg)
+    // }).catch((msg)=>{
+    //     console.log(msg)
+    // });
+</script>
+
+</html>

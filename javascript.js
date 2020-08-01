@@ -29,6 +29,16 @@ const listFriends = document.querySelector(".popularFriends");
 const listFriendsContainer = document.querySelector(".friends-container");
 const chatMessageList = document.querySelector("#chat-message-list");
 const conversationLists = document.querySelector("#conversation-list");
+const tabs = document.querySelectorAll("#myTab li");
+
+tabs.forEach(function(tab){
+    tab.addEventListener("click", function(){
+        for(let i = 0; i < tabs.length; i++){
+            tabs[i].classList.remove("active-tab");
+        }
+        tab.classList.add("active-tab");
+    });
+});
 
 menuBtn.addEventListener("click", function () {
     menuDropdown.classList.toggle("hidden");
@@ -72,7 +82,7 @@ function loadChatList() {
     });
 }
 
-// Search user name - ERROR
+//=======Search user name - ERROR===========
 var conversationList = document.querySelectorAll(".conversation");
 function searching(keyword) {
     console.log(keyword);
@@ -232,6 +242,7 @@ function sendImage(event) {
 }
 
 //======Emoji==========
+loadEmoji();
 function loadEmoji(){
     var emojiArray = '';
     for(let i = 128512; i <= 128580; i++){
@@ -240,7 +251,6 @@ function loadEmoji(){
     document.querySelector("#smiley").innerHTML = emojiArray;
 }
 
-loadEmoji();
 
 function showEmojiPanel(){
     document.querySelector("#emoji").removeAttribute("style");
@@ -253,6 +263,20 @@ function hideEmojiPanel(){
 function getEmoji(control){
     document.querySelector("#inputMessage").value += control.innerHTML;
 }
+
+//======Change Icon========
+function changeIcon(text){
+    if(text.value !==""){
+        document.querySelector("#send-icon").removeAttribute("style");
+        document.querySelector("#send-recorder").setAttribute("style", "display: none");
+    }else{
+        document.querySelector("#send-recorder").removeAttribute("style");
+        document.querySelector("#send-icon").setAttribute("style", "display: none"); 
+    }
+}
+
+//=======Audio Recorder=======
+
 
 function GetCurrentTime() {
     let hours = new Date().getHours();

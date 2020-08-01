@@ -155,13 +155,9 @@
         </div>
 
         <div id="chat-form">
-            <div id="file-icon" onclick="chooseImage();"><i class="fas fa-paperclip"></i></div>
-            <input type="file" id="uploadFile" onchange="sendImage(this);" accept="image/*" style="display:none">
-            <input type="text" placeholder="Type a message" onclick="OneKeyDown();" onfocus="hideEmojiPanel();" id="inputMessage">
-            <div id="send-icon" onclick="showEmojiPanel();"><i class="fas fa-paper-plane"></i></div>
             <div id="emoji" style="display: none;">
                 <ul id="myTab">
-                    <li>
+                    <li class="active-tab">
                         <a id="home-tab" href="#smiley">Smiley</a>
                     </li>
                     <li>
@@ -183,6 +179,11 @@
                     </div>
                 </div>
             </div>
+            <div id="file-icon" onclick="chooseImage();"><i class="fas fa-paperclip"></i></div>
+            <input type="file" id="uploadFile" onchange="sendImage(this);" accept="image/*" style="display:none">
+            <input id="inputMessage" type="text" placeholder="Type a message" onclick="OneKeyDown();" onkeyup="changeIcon(this);" onfocus="hideEmojiPanel();">
+            <div id="send-icon" onclick="showEmojiPanel();" style="display: none;"><i class="fas fa-paper-plane"></i></div>            
+            <div id="send-recorder"><i class="fas fa-microphone"></i></div>
         </div>
     </div>
 </body>

@@ -346,8 +346,35 @@ body {
 }
 
 #emoji{
+    width: 500px;
+    height: 200px;
+    position: relative;
+}
+
+#myTab{
     width: 100%;
-    display: inline;
+    display: flex;
+    list-style: none;
+    font-size: 20px;
+    font-weight: 600;
+    background-color: #eee;
+    color: #000;
+}
+
+#myTab li{
+    padding: 8px 12px;
+    margin-right: 20px;
+}
+
+#myTab li.active-tab{
+    background-color: #ddd;
+}
+
+#myTab li a{
+    text-decoration: none;    
+}
+#myTab li a:visited, #myTab li a:hover, #myTab li a:active{
+    color: #000;
 }
 
 #myTabContent a{
