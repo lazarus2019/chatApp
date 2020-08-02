@@ -28,14 +28,15 @@
         btnMusic.style.display = "block";
     }
 
+    // Create new recorder
     function startRecording() {
         device.then(stream => {
             recorder = new MediaRecorder(stream);
             recorder.ondataavailable = e => {
                 chunks.push(e.data);
 
-                if (recorder.state == 'inactive') {
-                    let blob = new Blob(chunks, { type: 'audio/webm' });
+                if (recorder.state === 'inactive') {
+                    let blob = new Blob(chunks, { type: 'audio/mp3' });
                     document.querySelector("#audio").src = URL.createObjectURL(blob);
                 }
             }

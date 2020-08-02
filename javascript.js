@@ -1,5 +1,6 @@
 var currentUserKey = '';
 var chatKey = '';
+var friend_id = '';
 
 const chatList = document.querySelector("#chat-message-list");
 function OneKeyDown() {
@@ -30,10 +31,11 @@ const listFriendsContainer = document.querySelector(".friends-container");
 const chatMessageList = document.querySelector("#chat-message-list");
 const conversationLists = document.querySelector("#conversation-list");
 const tabs = document.querySelectorAll("#myTab li");
+const sendRecorder = document.querySelector("#send-recorder");
 
-tabs.forEach(function(tab){
-    tab.addEventListener("click", function(){
-        for(let i = 0; i < tabs.length; i++){
+tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+        for (let i = 0; i < tabs.length; i++) {
             tabs[i].classList.remove("active-tab");
         }
         tab.classList.add("active-tab");
@@ -123,6 +125,8 @@ newChatBtn.addEventListener("click", function () {
 
 function startChat(friendKey, friendName, friendPhoto) {
     var friendList = { friendId: friendKey, userId: currentUserKey };
+    friend_id = friendKey;
+
     var flag = false;
     var db = firebase.database().ref('friend_list');
     db.on('value', function (friends) {
@@ -161,9 +165,15 @@ function loadChatMessages(chatKey, friendPhoto) {
             var chat = data.val();
             var msg = '';
             var dateTime = chat.dateTime.split(",");
-            if(chat.msg.indexOf("base64") !== -1){
+            // Message type
+            if (chat.msgType === "image") {
                 msg = `<img src='${chat.msg}' class="img-fluid">`;
-            }else{
+            } else if (chat.msgType === "audio") {
+                msg = `<audio controls>
+                    <source src="${chat.msg}" type="video/webm"/>
+                    </audio>`;
+            }
+            else {
                 msg = chat.msg;
             }
             if (chat.userId !== currentUserKey) {
@@ -189,11 +199,32 @@ function loadChatMessages(chatKey, friendPhoto) {
 }
 
 function SendMessage(inputMessage) {
-    var chatMessage = { userId: currentUserKey, msg: inputMessage, dateTime: new Date().toLocaleString() };
+    var chatMessage = { userId: currentUserKey, msg: inputMessage, msgType: "text", dateTime: new Date().toLocaleString() };
     // alert(chatKey);
     firebase.database().ref('chatMessages').child(chatKey).push(chatMessage, function (error) {
         if (error) alert(error);
         else {
+            // Notification
+            firebase.database().ref('fcmTokens').child(friend_id).once('value').then(function(data){
+                $.ajax({
+                    url: 'https://fcm.googleapis.com/fcm/send',
+                    header: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'z2NNd40CSUpLPlAWVwSdwWchhuNmyEnE2Hu0XOFH'
+                    },
+                    data: JSON.stringify({
+                        'to': data.val().token_id,
+                        'data': {'message': chatMessage.msg.substring(0, 30)}
+                    }),
+                    success: function(response){
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error){
+                        console.log(xhr.error);
+                    }
+                });
+            });
+
             // var message = `<div class="message-row you-message" >
             // <div class="message-content">
             //     <div class="message-text">${inputMessage}</div>
@@ -225,13 +256,13 @@ function sendImage(event) {
         var reader = new FileReader();
 
         reader.addEventListener("load", function () {
-            var chatMessage = { userId: currentUserKey, msg: reader.result, dateTime: new Date().toLocaleString() };
+            var chatMessage = { userId: currentUserKey, msg: reader.result, msgType: "image", dateTime: new Date().toLocaleString() };
             // alert(chatKey);
             firebase.database().ref('chatMessages').child(chatKey).push(chatMessage, function (error) {
                 if (error) alert(error);
-                else {                    
+                else {
                     document.querySelector("#inputMessage").value = "";
-                    document.querySelector("#inputMessage").focus();                   
+                    document.querySelector("#inputMessage").focus();
                 }
             });
         }, false);
@@ -243,41 +274,89 @@ function sendImage(event) {
 
 //======Emoji==========
 loadEmoji();
-function loadEmoji(){
+function loadEmoji() {
     var emojiArray = '';
-    for(let i = 128512; i <= 128580; i++){
+    for (let i = 128512; i <= 128580; i++) {
         emojiArray += `<a onclick="getEmoji(this);" style="cursor: pointer">&#${i}</a>`;
     }
     document.querySelector("#smiley").innerHTML = emojiArray;
 }
 
-
-function showEmojiPanel(){
+function showEmojiPanel() {
     document.querySelector("#emoji").removeAttribute("style");
 }
 
-function hideEmojiPanel(){
+function hideEmojiPanel() {
     document.querySelector("#emoji").setAttribute("style", "display:none");
 }
 
-function getEmoji(control){
+function getEmoji(control) {
     document.querySelector("#inputMessage").value += control.innerHTML;
 }
 
 //======Change Icon========
-function changeIcon(text){
-    if(text.value !==""){
+function changeIcon(text) {
+    if (text.value !== "") {
         document.querySelector("#send-icon").removeAttribute("style");
         document.querySelector("#send-recorder").setAttribute("style", "display: none");
-    }else{
+    } else {
         document.querySelector("#send-recorder").removeAttribute("style");
-        document.querySelector("#send-icon").setAttribute("style", "display: none"); 
+        document.querySelector("#send-icon").setAttribute("style", "display: none");
     }
 }
 
 //=======Audio Recorder=======
+let chunks = [];
+let recorder;
+var timeOut;
 
+function record(control) {
+    let device = navigator.mediaDevices.getUserMedia({ audio: true });
+    // Create new recorder
+    device.then(stream => {
+        if (recorder === undefined) {
+            recorder = new MediaRecorder(stream);
+            recorder.ondataavailable = e => {
+                chunks.push(e.data);
 
+                if (recorder.state === 'inactive') {
+                    let blob = new Blob(chunks, { type: 'audio/webm' });
+                    var reader = new FileReader();
+
+                    reader.addEventListener("load", function () {
+                        var chatMessage = { userId: currentUserKey, msg: reader.result, msgType: "audio", dateTime: new Date().toLocaleString() };
+                        // alert(chatKey);
+                        firebase.database().ref('chatMessages').child(chatKey).push(chatMessage, function (error) {
+                            if (error) alert(error);
+                            else {
+                                document.querySelector("#inputMessage").value = "";
+                                document.querySelector("#inputMessage").focus();
+                            }
+                        });
+                    }, false);
+                    reader.readAsDataURL(blob);
+                }
+            }
+            recorder.start();
+            control.innerHTML = '<i class="fas fa-stop"></i>';
+            console.log(recorder);
+        }
+    });
+    if (recorder !== undefined) {
+        if (control.getAttribute("class").indexOf("start") !== -1) {
+            recorder.stop();
+            control.setAttribute("class", "start");
+            control.innerHTML = "<i class='fas fa-microphone'></i>";
+        } else {
+            chunks = [];
+            recorder.start();
+            control.setAttribute("class", "stop");
+            control.innerHTML = "<i class='fas fa-stop'></i>";
+        }
+    }
+}
+
+//=====Get Current Time=======
 function GetCurrentTime() {
     let hours = new Date().getHours();
     let minutes = new Date().getMinutes();
@@ -335,6 +414,15 @@ function onStateChanged(user) {
             } else {
                 firebase.database().ref("users").push(userProfile, callback);
             }
+
+            //=====Notifications=======
+            const messaging = firebase.messaging();
+            messaging.requestPermission().then(function () {
+                return messaging.getToken();
+            }).then(function (token) {
+                firebase.database().ref('fcmTokens').child(currentUserKey).set({token_id: token});
+            });
+
             // Load chat list
             loadChatList();
         });

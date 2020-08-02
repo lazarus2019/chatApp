@@ -46,90 +46,6 @@
             <input type="text" placeholder="Search" id="input-search" oninput="searching(this.value);">
         </div>
         <div id="conversation-list">
-            <!-- <div class="conversation" data-currentFriendKey="">
-                <img src="img/1.png" alt="User name">
-                <div class="title-text">
-                    Daryl Duckmanton
-                </div>
-                <div class="created-date">
-                    Apr 16
-                </div>
-                <div class="conversation-message">
-                    This is a message
-                </div>
-            </div>
-            <div class="conversation">
-                <img src="img/2.png" alt="User name">
-                <div class="title-text">
-                    Anna Baterfil
-                </div>
-                <div class="created-date">
-                    Apr 16
-                </div>
-                <div class="conversation-message">
-                    This is a message
-                </div>
-            </div>
-            <div class="conversation">
-                <img src="img/3.png" alt="User name">
-                <div class="title-text">
-                    McGree
-                </div>
-                <div class="created-date">
-                    Apr 16
-                </div>
-                <div class="conversation-message">
-                    This is a message
-                </div>
-            </div>
-            <div class="conversation">
-                <img src="img/4.png" alt="User name">
-                <div class="title-text">
-                    Krix Daniel
-                </div>
-                <div class="created-date">
-                    Apr 16
-                </div>
-                <div class="conversation-message">
-                    This is a message
-                </div>
-            </div>
-            <div class="conversation">
-                <img src="img/5.png" alt="User name">
-                <div class="title-text">
-                    Lazarus
-                </div>
-                <div class="created-date">
-                    Apr 16
-                </div>
-                <div class="conversation-message">
-                    This is a message
-                </div>
-            </div>
-            <div class="conversation">
-                <img src="img/6.png" alt="User name">
-                <div class="title-text">
-                    Lucy
-                </div>
-                <div class="created-date">
-                    Apr 16
-                </div>
-                <div class="conversation-message">
-                    This is a message
-                </div>
-            </div>
-            <div class="conversation">
-                <img src="img/7.png" alt="User name">
-                <div class="title-text">
-                    Pill
-                </div>
-                <div class="created-date">
-                    Apr 16
-                </div>
-                <div class="conversation-message">
-                    This is a message
-                </div>
-            </div> -->
         </div>
 
         <div id="new-message-container">
@@ -183,7 +99,7 @@
             <input type="file" id="uploadFile" onchange="sendImage(this);" accept="image/*" style="display:none">
             <input id="inputMessage" type="text" placeholder="Type a message" onclick="OneKeyDown();" onkeyup="changeIcon(this);" onfocus="hideEmojiPanel();">
             <div id="send-icon" onclick="showEmojiPanel();" style="display: none;"><i class="fas fa-paper-plane"></i></div>            
-            <div id="send-recorder"><i class="fas fa-microphone"></i></div>
+            <div id="send-recorder" onclick="record(this);" class="start"><i class="fas fa-microphone"></i></div>
         </div>
     </div>
 </body>
@@ -198,6 +114,8 @@
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
 <script src="https://www.gstatic.com/firebasejs/7.16.0/firebase-analytics.js"></script>
+<script src="jquery-3.5.1.min.js"></script>
+<script src="firebase-messaging.js"></script>
 <script src="firebase.init.js"></script>
 <script src="javascript.js"></script>
 
